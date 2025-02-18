@@ -728,17 +728,42 @@
   }
 }
 
+html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   margin: 0;
+  padding: 0;
+  min-height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: var(--bg-color);
   color: var(--text-primary);
+  overflow-y: scroll;
+}
+
+#grid {
+  height: auto;
+  min-height: 100%;
+}
+
+.scrollable-container {
+  height: 100vh;
+  overflow-y: scroll;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 1rem;
+  min-height: 100vh;
 }
 
 .search-bar {
@@ -858,22 +883,31 @@ body {
 }
 
 .card {
-  position: relative;
   background: var(--card-bg);
-  padding: 1rem;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  transition: all 0.2s ease;
-  cursor: move; /* Show move cursor for dragging */
+  padding: 1rem;
+  cursor: grab;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  width: 200px;
+  height: 120px;
+  box-sizing: border-box;
 }
 
 .card a {
-  display: block;
   text-decoration: none;
-  cursor: pointer !important; /* Force pointer cursor */
-  pointer-events: auto !important; /* Ensure clicks work */
-  position: relative;
-  z-index: 1; /* Place above the draggable area */
+  color: inherit;
+  display: block;
+  cursor: pointer;
+}
+
+.card a:hover .card-title {
+  color: var(--accent-color);
+}
+
+.card a:hover .card-url {
+  color: var(--accent-color);
+  opacity: 0.8;
 }
 
 .card-title {
@@ -884,27 +918,17 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   color: var(--text-primary);
+  transition: color 0.2s ease;
 }
 
 .card-url {
-  font-size: 0.8em;
-  color: var(--text-primary);
-  opacity: 0.7;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.card a:hover {
-  text-decoration: underline;
-  color: var(--accent-color);
-}
-
-.card-actions {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  z-index: 2; /* Place above links */
+  transition: color 0.2s ease;
 }
 
 .card:hover {
@@ -977,26 +1001,6 @@ body {
 
 .card-title:hover, .card-url:hover {
   color: var(--accent-color);
-  text-decoration: underline;
-}
-
-.card-title {
-  font-size: 0.9rem;
-  font-weight: 600;
-  margin: 0 0 0.25rem 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: 1.2;
-}
-
-.card-url {
-  font-size: 0.8em;
-  opacity: 0.7;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: 1.2;
 }
 
 .grid-controls {

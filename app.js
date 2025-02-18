@@ -136,53 +136,32 @@ function createCard(data) {
     
     const domain = data.url ? new URL(data.url).hostname : 'Unknown';
     
-    // Create the card structure with separate elements
-    const actionsDiv = document.createElement('div');
-    actionsDiv.className = 'card-actions';
-    actionsDiv.innerHTML = `
-      <button class="action-button edit" aria-label="Edit site">
-        <svg width="16" height="16" viewBox="0 0 24 24">
-          <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
-        </svg>
-      </button>
-      <button class="action-button delete" aria-label="Delete site">
-        <svg width="16" height="16" viewBox="0 0 24 24">
-          <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
-        </svg>
-      </button>
+    card.innerHTML = `
+      <div class="card-actions">
+        <button class="action-button edit" aria-label="Edit site">
+          <svg width="16" height="16" viewBox="0 0 24 24">
+            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
+          </svg>
+        </button>
+        <button class="action-button delete" aria-label="Delete site">
+          <svg width="16" height="16" viewBox="0 0 24 24">
+            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
+          </svg>
+        </button>
+      </div>
+      <a href="${data.url}" target="_blank" rel="noopener noreferrer" class="card-link">
+        <img src="${data.image || getFaviconUrl(data.url)}" 
+             class="card-icon" 
+             alt="Site icon"
+             onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgZmlsbD0iI2RkZCIvPjwvc3ZnPg=='">
+        <h3 class="card-title">${data.title || 'Untitled'}</h3>
+        <div class="card-url">${domain}</div>
+      </a>
     `;
 
-    const img = document.createElement('img');
-    img.src = data.image || getFaviconUrl(data.url);
-    img.className = 'card-icon';
-    img.alt = 'Site icon';
-    img.onerror = function() {
-      this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgZmlsbD0iI2RkZCIvPjwvc3ZnPg==';
-    };
-
-    const titleLink = document.createElement('a');
-    titleLink.href = data.url;
-    titleLink.className = 'card-title';
-    titleLink.textContent = data.title || 'Untitled';
-    titleLink.target = '_blank';
-    titleLink.rel = 'noopener noreferrer';
-
-    const urlLink = document.createElement('a');
-    urlLink.href = data.url;
-    urlLink.className = 'card-url';
-    urlLink.textContent = domain;
-    urlLink.target = '_blank';
-    urlLink.rel = 'noopener noreferrer';
-
-    // Add elements to card in correct order
-    card.appendChild(actionsDiv);
-    card.appendChild(img);
-    card.appendChild(titleLink);
-    card.appendChild(urlLink);
-
-    // Add event listeners
-    const editBtn = actionsDiv.querySelector('.edit');
-    const deleteBtn = actionsDiv.querySelector('.delete');
+    // Add event listeners for edit and delete
+    const editBtn = card.querySelector('.edit');
+    const deleteBtn = card.querySelector('.delete');
 
     editBtn.addEventListener('click', (e) => {
       e.preventDefault();
@@ -199,10 +178,20 @@ function createCard(data) {
         refreshGrid();
       }
     });
+    
+    // Make card draggable but don't interfere with link clicks
+    card.addEventListener('mousedown', (e) => {
+      if (e.target.closest('.card-actions')) {
+        e.stopPropagation();
+      }
+    });
 
-    // Make card draggable
-    card.draggable = true;
-
+    card.addEventListener('dragstart', (e) => {
+      if (e.target.closest('.card-link')) {
+        e.preventDefault();
+      }
+    });
+    
     return card;
   } catch (error) {
     console.error('Error creating card:', error);
