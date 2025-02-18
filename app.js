@@ -150,11 +150,11 @@ function createCard(data) {
         </button>
       </div>
       <a href="${data.url}" target="_blank" rel="noopener noreferrer" class="card-link">
-        <img src="${data.image || getFaviconUrl(data.url)}" 
+        <img src="${getFaviconUrl(data.url)}" 
              class="card-icon" 
              alt="Site icon"
              onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgZmlsbD0iI2RkZCIvPjwvc3ZnPg=='">
-        <h3 class="card-title">${data.title || 'Untitled'}</h3>
+        <h3 class="card-title">${data.title || data.url}</h3>
         <div class="card-url">${domain}</div>
       </a>
     `;
@@ -266,7 +266,7 @@ async function refreshGrid() {
           const metadata = await fetchSiteMetadata(site.url);
           const card = createCard({
             url: site.url,
-            title: metadata?.title || site.title,
+            title: site.title || metadata?.title,
             image: metadata?.image,
             groupId: group.id
           });
@@ -309,7 +309,7 @@ async function refreshGrid() {
           const metadata = await fetchSiteMetadata(site.url);
           const card = createCard({
             url: site.url,
-            title: metadata?.title || site.title,
+            title: site.title || metadata?.title,
             image: metadata?.image,
             groupId: 'ungrouped'
           });
