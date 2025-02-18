@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link Page Generator V3</title>
+    <link rel="icon" href="your-logo-url.png" type="image/png">
+    <style>
+        body {
+            background-color: #121212;
+            color: #4DD0E1;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 14px;
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+            /* Prevents scrollbar due to the absolute positioning */
+        }
+
+        .content-block {
+            background-color: #333;
+            border-radius: 5px;
+            padding: 20px;
+            width: auto;
+            min-width: 300px;
+            /* Adjust based on your content size */
+            max-width: 800px;
+            /* Adjust based on your content size */
+            position: relative;
+            /* For positioning the footer absolutely within this block */
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0px;
+        }
+
+        .logo a img {
+            width: 100px;
+            border-radius: 5px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 0.7;
+            }
+        }
+
+        select,
+        input[type="text"],
+        button {
+            background-color: #333333;
+            color: #4DD0E1;
+            padding: 10px;
+            border-radius: 4px;
+            width: 100%;
+            border: none;
+            margin: 10px 0;
+            /* Added margin for spacing */
+        }
+
+        button {
+            background-color: #fff;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        button:hover {
+            background-color: #4DD0E1;
+            color: #121212;
+        }
+
+        .footer {
+            color: #4DD0E1;
+            position: absolute;
+            /* Positions at the bottom of .content-block */
+            bottom: 10px;
+            /* Adjust based on your needs */
+            left: 20px;
+            /* Adjust based on your needs */
+            width: calc(100% - 40px);
+            /* Adjust based on padding of .content-block */
+        }
+
+        .footer a {
+            color: inherit;
+            /* Uses the color of the parent which is set to #4DD0E1 */
+        }
+
+        /* Flipping text styles */
+        #container {
+            color: #999;
+            font-weight: bold;
+            padding-top: 14px;
+            text-transform: uppercase;
+            font-size: 18px;
+            /* Adjusted for size within the block */
+            position: absolute;
+            top: 19%;
+            left: 36%;
+            transform: translate(-50%, -50%);
+            width: auto;
+            text-align: center;
+        }
+
+        #flip {
+            height: 20px;
+            overflow: hidden;
+        }
+
+        #flip>div>div {
+            color: #fff;
+            padding: 4px 9px;
+            height: 20px;
+            margin-bottom: 6px;
+            display: inline-block;
+            /* Initial background color for all divs */
+            background: #4DD0E1;
+        }
+
+        #flip div:first-child div {
+            /* Specific background color for the first div */
+            background: #333;
+        }
+
+        #flip div:last-child div {
+            /* Specific background color for the last div */
+            background: #333;
+        }
+
+        #flip div:first-child {
+            animation: show 5s linear infinite;
+        }
+
+        @keyframes show {
+
+            0%,
+            45% {
+                margin-top: 0px;
+            }
+
+            33%,
+            45% {
+                margin-top: -30px;
+            }
+
+            66% {
+                margin-top: -60px;
+            }
+        }
+
+        /* New section styles */
+        .new-section {
+            position: fixed;
+            /* Makes it stick at the bottom half of the page */
+            top: auto;
+            /* Starts at half the height of the viewport */
+            margin-top: 20.8%;
+            width: 100%;
+            /* Takes full width */
+            height: 100%;
+            /* Takes half the height of the viewport */
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #121212;
+        }
+
+        .wrapper {
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            display: table;
+            height: 100vh;
+        }
+
+        .text-animation {
+            display: table-cell;
+            vertical-align: top;
+            padding: 0px;
+            text-align: center;
+
+            a {
+                font-size: 51px;
+                line-height: 1;
+                position: relative;
+                display: inline-block;
+                vertical-align: top;
+                overflow: hidden;
+                text-transform: capitalize;
+                text-decoration: none;
+                color: #333;
+
+                span {
+                    display: inline-block;
+                    vertical-align: top;
+                    transform: rotate3d(0, 1, 0, 360deg);
+                    transition: transform 1.4s, color 0.2s ease-in;
+
+                    &:nth-child(1) {
+                        transition-delay: 1s;
+                    }
+
+                    &:nth-child(2) {
+                        transition-delay: 0.8s
+                    }
+
+                    &:nth-child(3) {
+                        transition-delay: 0.6s
+                    }
+
+                    &:nth-child(4) {
+                        transition-delay: 0.4s
+                    }
+
+                    &:nth-child(5) {
+                        transition-delay: 0.2s
+                    }
+                }
+
+                &:hover {
+                    text-decoration: none;
+                    color: #333;
+
+                    &:before {
+                        transform: translate3d(0, 0, 0);
+                    }
+
+                    span {
+                        color: #ffffff;
+                        transform: rotate3d(0, 1, 0, 0deg);
+                        transition: transform 1.4s, color 0.8s ease-in;
+
+                        @for $i from 1 through 5 {
+                            ;
+
+                            &:nth-child(#{$i}) {
+                                transition-delay: #{$i * .2}s
+                            }
+                        }
+                    }
+                }
+
+                &:before {
+                    content: '';
+                    position: absolute;
+                    height: 95%;
+                    width: 99.8%;
+                    border-width: 1px 0;
+                    border-color: #4DD0E1;
+                    border-style: solid;
+                    left: 0;
+                    transform: translate3d(-100%, 0, 0);
+                    transition: transform 0.4s linear;
+                }
+            }
+        }
+
+        .content-block2 {
+            background-color: #333;
+            border-radius: 5px;
+            padding: 20px;
+            position: fixed;
+            /* Makes it stick at the bottom half of the page */
+            width: auto;
+            /* Takes full width */
+            height: 370px;
+            /* Takes half the height of the viewport */
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            margin-top: 20px;
+            /* Added to space out from the previous content */
+            min-width: 840px;
+            /* Adjust based on your content size */
+            max-width: 800px;
+            /* Adjust based on your content size */
+            margin-top: 530px;
+            /* Centering the block */
+            overflow: auto;
+        }
+
+        #text-input {
+            width: 97%;
+            background-color: #222;
+            color: #4DD0E1;
+            border: 1px solid #555;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 10px;
+            /* Space between textarea and button */
+            height: 120px;
+            /* Adjust based on your needs */
+        }
+
+
+        #load-btn {
+            background-color: #444;
+            color: #FFF;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            width: 50%;
+            margin: 0px auto;
+            /* Center button */
+        }
+
+        #load-btn:hover {
+            background-color: #4DD0E1;
+        }
+
+        #save-btn {
+            background-color: #444;
+            color: #FFF;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            width: 50%;
+            margin: 0px auto;
+            /* Center button */
+        }
+
+        #save-btn:hover {
+            background-color: #4DD0E1;
+        }
+
+        .button-container {
+    display: flex;
+    align-items: center; /* Center buttons horizontally */
+    gap: 10px; /* Add space between buttons */
+    margin-top: 0px; /* Space from the textarea */
+}
+div.a {
+  font-size: 10px;
+}
+
+    </style>
+
+
+</head>
+
+<body>
+    <div class="content-block">
+        <div class="header">
+            <div class="logo"><a href="javascript:location.reload();"><img src="your-logo-url.png" alt="Logo"></a></div>
+            <h2>Link Page Generator V3</h2>
+        </div>
+
+        <!-- Generator fields -->
+        <label for="siteTitle">Link Page Title:</label>
+        <input type="text" id="siteTitle" name="siteTitle" placeholder="Enter link page title here">
+        <label for="linksFile">Upload Links Text File:</label>
+        <input type="file" id="linksFile" name="linksFile" accept=".txt">
+        <button onclick="processFile()">Generate Link Page</button>
+        <br>
+            <!-- Flipping text -->
+    <div id="container">
+        EDIT YOUR TEXT FILE
+        <div id="flip">
+            <div><div>TITLE YOUR PAGE</div></div>
+            <div><div>CHOOSE TEXT FILE</div></div>
+            <div><div>PICK YOUR FOLDER</div></div>
+        </div>
+        PAGE IS GENERATED!
+    </div>
+    <br>
+    <div class="footer">
+        This page was designed by <a href="https://greatcreations.ca" target="_blank">Great Creations</a>.
+    </div>
+</div>
+
+
+<!-- New Section -->
+<div class="new-section">
+    <div class="wrapper">
+        <div class="text-animation">
+          <a href="#">
+            <span>L</span>
+            <span>I</span>
+            <span>N</span>
+            <span>K</span>
+            <span> </span>
+            <span>P</span>
+            <span>A</span>
+            <span>G</span>
+            <span>E</span>
+            <span> </span>
+            <span>G</span>
+            <span>E</span>
+            <span>N</span>
+            <span>E</span>
+            <span>R</span>
+            <span>A</span>
+            <span>T</span>
+            <span>O</span>
+            <span>R</span>
+        
+          </a>
+        </div>
+      </div>
+</div>
+
+<script>
+    document.getElementById('linksFile').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (!file) {
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const content = e.target.result;
+            const sections = organizeContent(content);
+            generateHTML(sections, document.getElementById('siteTitle').value);
+        };
+        reader.readAsText(file);
+    });
+
+    function processFile() {
+        document.getElementById('linksFile').click();
+    }
+
+    function organizeContent(content) {
+            let sections = [];
+            content.trim().split('\n').forEach(line => {
+                if (line.startsWith('//')) {
+                    const parts = line.substring(2).trim().split(',');
+                    const categoryName = parts[0].trim();
+                    const categoryLink = parts.length > 1 ? parts[1].trim() : null;
+                    sections.push({ category: categoryName, link: categoryLink, links: [] });
+                } else {
+                    const [url, name] = line.split(',').map(part => part.trim());
+                    if (url && name) sections[sections.length - 1].links.push({ url, name });
+                }
+            });
+            return sections;
+        }
+
+        function generateHTML(sections, title) {
+    let dropdownHTML = sections.map(section => 
+        `<optgroup label="${section.category}" style="font-weight: bold; color: #4DD0E1;">` +
+            section.links.map(link => 
+                `<option style="margin-left: 20px; color: #4DD0E1;">${link.name}</option>`
+            ).join('') +
+        `</optgroup>`
+    ).join('');
+
+    let sectionsHTML = sections.map(section => 
+        `<div class="section">
+            <h2>${section.link ? `<a href="${section.link}" target="_blank" style="color: #4DD0E1;">${section.category}</a>` : section.category}</h2>
+            <div class="grid-container">` +
+            section.links.slice(0, 15).map(link => 
+                `<div class="grid-item"><img src="https://www.google.com/s2/favicons?domain=${link.url}" alt=""><a href="${link.url}" target="_blank" style="color: #4DD0E1;">${link.name}</a></div>`
+            ).join('') +
+            (section.links.length > 15 ? 
+                `<button class="show-more" onclick="document.getElementById('modal-${section.category.replace(/\s+/g, '_')}').style.display='block'">See More</button>
+                <div id="modal-${section.category.replace(/\s+/g, '_')}" class="modal">
+                    <div class="modal-content">
+                        <span class="close" onclick="document.getElementById('modal-${section.category.replace(/\s+/g, '_')}').style.display='none'">&times;</span>
+                        <div class="modal-links">` +
+                        section.links.slice(15).map(link => 
+                            `<div class="modal-link-item"><img src="https://www.google.com/s2/favicons?domain=${link.url}" alt=""><a href="${link.url}" target="_blank" style="color: #4DD0E1;">${link.name}</a></div>`
+                        ).join('') +
+                        `</div>
+                    </div>
+                </div>` : '') +
+            `</div>
+        </div>`
+    ).join('');
+
+    let htmlContent = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>${title}</title>
+    <style>
+        body { background-color: #121212; color: #4DD0E1; font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;}
+        .logo a img { width: 100px; border-radius: 5px;}
+        .dropdown { width: 50%; margin: 0 auto; }
+        select { background-color: #333333; color: #4DD0E1; padding: 10px; border-radius: 4px; width: 100%; }
+        .grid-container, .modal-links { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+        .grid-item, .modal-link-item { background-color: #333; padding: 20px; border-radius: 5px; margin-bottom: 20px; display: flex; align-items: center; }
+        .grid-item img, .modal-link-item img { width: 20px; height: 20px; margin-right: 10px; }
+        .grid-item a, .modal-link-item a, .footer a { color: #4DD0E1; text-decoration: none; }
+        .grid-item a:visited, .modal-link-item a:visited, .footer a:visited { color: #4DD0E1; }
+        .section { margin-bottom: 20px; }
+        .section h2 { margin-bottom: 15px; }
+        .footer { color: #4DD0E1; margin-top: 20px; text-align: center; }
+        .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgb(0,0,0,0.4);}
+        .modal-content { background-color: #333; color: #4DD0E1; margin: 15% auto; padding: 20px; border: 1px solid #888; border-radius: 5px; width: 60%; }
+        .close { color: #aaa; float: right; font-size: 28px; font-weight: bold; }
+        .close:hover, .close:focus { color: #4DD0E1; text-decoration: none; cursor: pointer; }
+        .show-more { background-color: #333; color: #4DD0E1; padding: 20px; border-radius: 5px; cursor: pointer; border: none; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo"><a href="." target="_blank"><img src="your-logo-url.png" alt="Logo"></a></div>
+        <div class="dropdown">
+            <select>
+                ${dropdownHTML}
+            </select>
+        </div>
+    </div>
+    ${sectionsHTML}
+    <div class="footer">This page was designed by <a href="https://greatcreations.ca" target="_blank">Great Creations</a>.</div>
+</body>
+</html>
+    `;
+
+    downloadFile(htmlContent, title.replace(/\s+/g, '_') + ".html");
+}
+
+        function downloadFile(htmlContent, fileName) {
+            const element = document.createElement('a');
+            const file = new Blob([htmlContent], {type: 'text/html'});
+            element.href = URL.createObjectURL(file);
+            element.download = fileName || 'download.html';
+            document.body.appendChild(element); // Required for this to work in FireFox
+            element.click();
+            document.body.removeChild(element);
+        }
+    </script>
+
+
+
+    <div class="content-block2">
+        <pre>Link Text File Creator</pre>
+        <textarea id="text-input" placeholder="Example:
+
+    //Really Great Stores, https://tinyurl.com/DDGSGCS
+    https://greatcreations.ca, Great Creations
+
+        This whould create a link to 'Great Creations' under the Category 'Really Great Stores'
+        alternativly by adding a comma and space after a Category, you can assign a URL to it also.
+        "></textarea>
+        <div class="button-container">
+            <input type="file" id="file-input" accept=".txt" style="display: none;" />
+            <button id="load-btn">Load Text File</button>
+            <button id="save-btn">Save as Text File</button>
+        </div>
+        <div class="a">
+        <pre>
+Text file format:           //Category, category_url
+                            location_of_site_folder_or_file, Link Title | More Description
+       
+                            //Next Category
+                            location_of_site_folder_or_file, Name it whatever  ¯\_(ツ)_/¯
+        </pre>
+        </div>
+      </div>
+  
+
+
+<script>
+    document.getElementById('save-btn').addEventListener('click', function() {
+      // Get the text from the textarea
+      var text = document.getElementById('text-input').value;
+      // Convert the text to a Blob
+      var textBlob = new Blob([text], { type: 'text/plain' });
+      // Create a URL for the Blob
+      var url = URL.createObjectURL(textBlob);
+      // Create a temporary link and click it to trigger the download
+      var downloadLink = document.createElement('a');
+      downloadLink.href = url;
+      // You can set the default filename for the saved file here
+      downloadLink.download = "userText.txt";
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+    }
+    );
+
+    document.getElementById('load-btn').addEventListener('click', function() {
+    document.getElementById('file-input').click(); // Trigger file input
+});
+
+document.getElementById('file-input').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('text-input').value = e.target.result; // Load content into textarea
+        };
+        reader.readAsText(file); // Read the file
+    }
+});
+
+
+  </script>
+  
+
+</body>
+</html>
