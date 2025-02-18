@@ -858,23 +858,53 @@ body {
 }
 
 .card {
-  background: var(--card-bg);
-  border-radius: 8px;
-  padding: 1rem;
-  cursor: grab;
-  transition: transform 0.2s, box-shadow 0.2s;
   position: relative;
-  width: 200px;
-  height: 120px;
-  box-sizing: border-box;
+  background: var(--card-bg);
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
+  cursor: move; /* Show move cursor for dragging */
 }
 
 .card a {
-  text-decoration: none;
-  color: var(--text-primary);
   display: block;
-  height: 100%;
-  pointer-events: none;
+  text-decoration: none;
+  cursor: pointer !important; /* Force pointer cursor */
+  pointer-events: auto !important; /* Ensure clicks work */
+  position: relative;
+  z-index: 1; /* Place above the draggable area */
+}
+
+.card-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-primary);
+}
+
+.card-url {
+  font-size: 0.8em;
+  color: var(--text-primary);
+  opacity: 0.7;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card a:hover {
+  text-decoration: underline;
+  color: var(--accent-color);
+}
+
+.card-actions {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 2; /* Place above links */
 }
 
 .card:hover {
@@ -938,6 +968,18 @@ body {
   object-fit: contain;
 }
 
+.card-title, .card-url {
+  cursor: pointer;
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.card-title:hover, .card-url:hover {
+  color: var(--accent-color);
+  text-decoration: underline;
+}
+
 .card-title {
   font-size: 0.9rem;
   font-weight: 600;
@@ -945,13 +987,11 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: var(--text-primary);
   line-height: 1.2;
 }
 
 .card-url {
   font-size: 0.8em;
-  color: var(--text-primary);
   opacity: 0.7;
   white-space: nowrap;
   overflow: hidden;
