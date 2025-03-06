@@ -1,0 +1,2670 @@
+<html><head>
+    <title>NotePinboard</title>
+    <style>
+    :root {
+      /* Original theme variables */
+      --bg-color: #1a1520;
+      --text-color: #ffffff;
+      --accent-orange: #ff6b35;
+      --accent-cyan: #4ecdc4;
+      --accent-pink: #ffb4e6;
+      --header-height: 3rem;
+      --note-size: 200px;
+      --note-gap: 10px;
+      
+      /* Note color variables */
+      --note-red: #ff4444;
+      --note-purple: #9b59b6;
+      --note-blue: #3498db;
+      --note-green: #2ecc71;
+      --note-yellow: #f1c40f;
+      --note-brown: #8b4513;
+      --note-light-gray: #95a5a6;
+      --note-magenta: #e91e63;
+      --note-lilac: #d8b5ff;
+      --note-fuchsia: #ff00ff;
+      --note-hot-pink: #ff69b4;
+      --note-mint-green: #98ff98;
+      --note-rose: #ff007f;
+      --note-burnt-orange: #cc5500;
+      --note-sky-blue: #87ceeb;
+    
+      /* Comic book theme variables - initially active */
+      --comic-bg-color: #f0f0f0;
+      --comic-text-color: #000000;
+      --comic-accent-red: #ee1d24;
+      --comic-accent-blue: #3770b0;
+      --comic-accent-yellow: #ffde00;
+      --comic-header-height: 3.5rem;
+      --comic-note-border: 3px solid #000;
+      --comic-shadow: 5px 5px 0px #000;
+      --comic-dot-pattern: rgba(0, 0, 0, 0.1);
+      
+      /* Material theme variables */
+      --material-bg-color: #ffffff;
+      --material-text-color: #333333;
+      --material-accent-primary: #2196f3;
+      --material-accent-secondary: #ff5722;
+      --material-accent-tertiary: #4caf50;
+      --material-header-height: 3.5rem;
+      --material-note-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      --material-radius: 4px;
+      
+      /* Dark mode theme variables */
+      --dark-bg-color: #121212;
+      --dark-text-color: #ffffff;
+      --dark-accent-primary: #bb86fc;
+      --dark-accent-secondary: #03dac6;
+      --dark-accent-tertiary: #cf6679;
+      --dark-header-height: 3.5rem;
+      --dark-note-bg: #2d2d2d;
+      --dark-note-border: 1px solid #444;
+    }
+    
+    /* Default is now Comic Book Theme */
+    body {
+      --bg-color: var(--comic-bg-color);
+      --text-color: var(--comic-text-color);
+      --accent-orange: var(--comic-accent-red);
+      --accent-cyan: var(--comic-accent-blue);
+      --accent-pink: var(--comic-accent-yellow);
+      --header-height: var(--comic-header-height);
+    
+      background-image: 
+        radial-gradient(var(--comic-dot-pattern) 10%, transparent 10%),
+        radial-gradient(var(--comic-dot-pattern) 10%, transparent 10%);
+      background-size: 20px 20px;
+      background-position: 0 0, 10px 10px;
+      background-attachment: fixed;
+    }
+    
+    .header {
+      background: var(--comic-accent-blue);
+      border-bottom: var(--comic-note-border);
+      box-shadow: var(--comic-shadow);
+    }
+    
+    .header h1 {
+      color: white;
+      font-family: 'Bangers', Arial, sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+      text-shadow: 2px 2px 0px #000;
+    }
+    
+    .add-note-btn {
+      background: var(--comic-accent-yellow);
+      color: black;
+      font-weight: bold;
+      border: 2px solid black;
+      box-shadow: 3px 3px 0px #000;
+      transform: rotate(-2deg);
+    }
+    
+    .add-note-btn:hover {
+      transform: rotate(0deg);
+    }
+    
+    .search-bar {
+      border: 2px solid #000 !important;
+      background: white;
+      color: black;
+      font-family: Arial, sans-serif;
+      transform: rotate(1deg);
+    }
+    
+    .note {
+      border: var(--comic-note-border);
+      box-shadow: var(--comic-shadow);
+      background: white;
+      position: relative;
+    }
+    
+    .note::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.05);
+      z-index: -1;
+    }
+    
+    .note-title {
+      font-family: Arial, sans-serif;
+      font-weight: bold;
+      color: #000;
+    }
+    
+    .note-textarea {
+      font-family: Arial, sans-serif;
+      background: white;
+      color: #000;
+      border: 1px dashed #000;
+    }
+    
+    .note-tags {
+      background: rgba(0,0,0,0.05);
+    }
+    
+    .tag {
+      background: white;
+      border: 1px solid #000;
+      color: #000;
+      font-family: Arial, sans-serif;
+      transform: rotate(-1deg);
+    }
+    
+    .modal-content {
+      border: var(--comic-note-border);
+      box-shadow: var(--comic-shadow);
+      background: white;
+      color: black;
+    }
+    
+    .btn {
+      color: #000;
+    }
+    
+    .mode-btn {
+      border: 1px solid black;
+    }
+    
+    .toast {
+      border: var(--comic-note-border);
+      box-shadow: var(--comic-shadow);
+      background: var(--comic-accent-yellow);
+      color: #000;
+      font-family: Arial, sans-serif;
+      font-weight: bold;
+      transform: rotate(-1deg);
+    }
+    
+    /* Material theme classes */
+    body.material-theme {
+      --bg-color: var(--material-bg-color);
+      --text-color: var(--material-text-color);
+      --accent-orange: var(--material-accent-secondary);
+      --accent-cyan: var(--material-accent-primary);
+      --accent-pink: var(--material-accent-tertiary);
+      --header-height: var(--material-header-height);
+      
+      background-image: none;
+    }
+    
+    body.material-theme .header {
+      background: var(--material-accent-primary);
+      border-bottom: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    
+    body.material-theme .header h1 {
+      color: white;
+      font-family: 'Roboto', Arial, sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 0;
+      text-shadow: none;
+      font-weight: 400;
+    }
+    
+    body.material-theme .add-note-btn {
+      background: white;
+      color: var(--material-accent-primary);
+      font-weight: 500;
+      border: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      transform: none;
+      border-radius: 4px;
+    }
+    
+    body.material-theme .add-note-btn:hover {
+      background: #f5f5f5;
+    }
+    
+    body.material-theme .search-bar {
+      border: none !important;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+      background: white;
+      color: var(--material-text-color);
+      font-family: 'Roboto', Arial, sans-serif;
+      transform: none;
+    }
+    
+    body.material-theme .note {
+      border: none;
+      box-shadow: var(--material-note-shadow);
+      background: white;
+      border-radius: var(--material-radius);
+    }
+    
+    body.material-theme .note::before {
+      display: none;
+    }
+    
+    body.material-theme .note-title {
+      font-family: 'Roboto', Arial, sans-serif;
+      font-weight: 500;
+      color: var(--material-text-color);
+    }
+    
+    body.material-theme .note-textarea {
+      font-family: 'Roboto', Arial, sans-serif;
+      background: white;
+      color: var(--material-text-color);
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+    }
+    
+    body.material-theme .note-tags {
+      background: #f5f5f5;
+      border-radius: 0 0 var(--material-radius) var(--material-radius);
+    }
+    
+    body.material-theme .tag {
+      background: white;
+      border: 1px solid #e0e0e0;
+      color: var(--material-text-color);
+      font-family: 'Roboto', Arial, sans-serif;
+      transform: none;
+      border-radius: 12px;
+    }
+    
+    body.material-theme .modal-content {
+      border: none;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      background: white;
+      color: var(--material-text-color);
+      border-radius: 8px;
+    }
+    
+    body.material-theme .btn {
+      color: var(--material-text-color);
+    }
+    
+    body.material-theme .toast {
+      border: none;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      background: #323232;
+      color: white;
+      font-family: 'Roboto', Arial, sans-serif;
+      font-weight: 400;
+      transform: none;
+      border-radius: 4px;
+    }
+    
+    /* Dark theme classes */
+    body.dark-theme {
+      --bg-color: var(--dark-bg-color);
+      --text-color: var(--dark-text-color);
+      --accent-orange: var(--dark-accent-tertiary);
+      --accent-cyan: var(--dark-accent-secondary);
+      --accent-pink: var(--dark-accent-primary);
+      --header-height: var(--dark-header-height);
+      
+      background-image: none;
+    }
+    
+    body.dark-theme .header {
+      background: #1f1f1f;
+      border-bottom: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+    
+    body.dark-theme .header h1 {
+      color: var(--dark-accent-primary);
+      font-family: 'Roboto', Arial, sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 0;
+      text-shadow: none;
+    }
+    
+    body.dark-theme .add-note-btn {
+      background: var(--dark-accent-secondary);
+      color: #121212;
+      font-weight: 500;
+      border: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      transform: none;
+      border-radius: 4px;
+    }
+    
+    body.dark-theme .add-note-btn:hover {
+      background: #04b4a4;
+    }
+    
+    body.dark-theme .search-bar {
+      border: var(--dark-note-border) !important;
+      border-radius: 4px;
+      background: var(--dark-note-bg);
+      color: var(--dark-text-color);
+      font-family: 'Roboto', Arial, sans-serif;
+      transform: none;
+    }
+    
+    body.dark-theme .note {
+      border: var(--dark-note-border);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      background: var(--dark-note-bg);
+      border-radius: 4px;
+    }
+    
+    body.dark-theme .note::before {
+      display: none;
+    }
+    
+    body.dark-theme .note-title {
+      font-family: 'Roboto', Arial, sans-serif;
+      font-weight: 500;
+      color: var(--dark-text-color);
+    }
+    
+    body.dark-theme .note-textarea {
+      font-family: 'Roboto', Arial, sans-serif;
+      background: #262626;
+      color: var(--dark-text-color);
+      border: 1px solid #444;
+      border-radius: 4px;
+    }
+    
+    body.dark-theme .note-tags {
+      background: #222;
+      border-top: var(--dark-note-border);
+    }
+    
+    body.dark-theme .tag {
+      background: #333;
+      border: 1px solid #555;
+      color: var(--dark-text-color);
+      font-family: 'Roboto', Arial, sans-serif;
+      transform: none;
+      border-radius: 12px;
+    }
+    
+    body.dark-theme .modal-content {
+      border: var(--dark-note-border);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      background: #1e1e1e;
+      color: var(--dark-text-color);
+      border-radius: 8px;
+    }
+    
+    body.dark-theme .toast {
+      border: none;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+      background: #333;
+      color: white;
+      font-family: 'Roboto', Arial, sans-serif;
+      font-weight: 400;
+      transform: none;
+      border-radius: 4px;
+    }
+    
+    /* Existing styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+    
+    body {
+      background: var(--bg-color);
+      color: var(--text-color);
+      font-size: 12px;
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed; /* Keeps background fixed while scrolling */
+    }
+    
+    .header {
+      height: var(--header-height);
+      padding: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255,255,255,0.05);
+      gap: 1rem;
+    }
+    
+    .header h1 {
+      font-size: 1rem;
+      color: var(--accent-cyan);
+    }
+    
+    .add-note-btn {
+      background: var(--accent-cyan);
+      color: var(--bg-color);
+      border: none;
+      padding: 0.25rem 0.5rem;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+    
+    .add-note-btn:hover {
+      opacity: 0.9;
+    }
+    
+    .search-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .settings-btn {
+      color: var(--text-color);
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    
+    .settings-btn:hover {
+      opacity: 1;
+    }
+    
+    .search-mode-toggle {
+      display: flex;
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 2px;
+      gap: 2px;
+    }
+    
+    .mode-btn {
+      width: 16px;
+      height: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      opacity: 0.5;
+    }
+    
+    .mode-btn.active {
+      opacity: 1;
+    }
+    
+    .mode-btn.all {
+      background: var(--accent-orange);
+    }
+    
+    .mode-btn.text {
+      background: var(--accent-cyan);
+    }
+    
+    .mode-btn.tags {
+      background: var(--accent-pink);
+    }
+    
+    .search-bar[data-mode="all"] {
+      border: 1px solid var(--accent-orange);
+    }
+    
+    .search-bar[data-mode="text"] {
+      border: 1px solid var(--accent-cyan);
+    }
+    
+    .search-bar[data-mode="tags"] {
+      border: 1px solid var(--accent-pink);
+    }
+    
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      bottom: auto;
+      left: auto;
+      transform: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      color: var(--bg-color);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 1000;
+    }
+    
+    .toast.visible {
+      opacity: 1;
+    }
+    
+    .pinboard {
+      padding: var(--note-gap);
+      display: grid;
+      grid-template-columns: repeat(auto-fill, var(--note-size));
+      gap: var(--note-gap);
+      justify-content: center;
+    }
+    
+    .note {
+      background: rgba(255,255,255,0.05);
+      border-radius: 3px;
+      position: relative;
+      cursor: move;
+      transition: all 0.2s ease;
+    }
+    
+    .note.expanded {
+      width: var(--note-size);
+      position: relative;
+      z-index: 10;
+    }
+    
+    .note-header {
+      padding: 0.5rem;
+      border-radius: 3px 3px 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .note-title {
+      border: none;
+      background: none;
+      color: var(--text-color);
+      font-size: 0.75rem;
+      width: 80%;
+    }
+    
+    .note-content {
+      padding: 0.5rem;
+      display: none;
+    }
+    
+    .note-content-title {
+      font-size: 0.7rem;
+      color: var(--text-color);
+      opacity: 0.7;
+      padding: 0.25rem 0.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .note.expanded .note-content {
+      position: absolute;
+      width: 100%;
+      background: var(--bg-color);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 0 0 3px 3px;
+    }
+    
+    .note.expanded .note-content {
+      display: block;
+    }
+    
+    .note-textarea {
+      width: 100%;
+      min-height: 100px;
+      background: rgba(255,255,255,0.05);
+      border: none;
+      color: var(--text-color);
+      font-size: 0.75rem;
+      padding: 0.25rem;
+      resize: vertical;
+    }
+    
+    .note-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+      padding: 0.5rem;
+      cursor: pointer; /* Show it's clickable */
+      position: relative;
+    }
+    
+    .note-tags::after {
+      content: '✎';
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      opacity: 0;
+      font-size: 10px;
+    }
+    
+    .note-tags:hover::after {
+      opacity: 0.7;
+    }
+    
+    .tag {
+      background: rgba(255,255,255,0.1);
+      padding: 0.1rem 0.25rem;
+      border-radius: 2px;
+      font-size: 0.65rem;
+      cursor: pointer;
+    }
+    
+    .btn {
+      background: none;
+      border: none;
+      color: var(--text-color);
+      cursor: pointer;
+      padding: 0.15rem;
+      font-size: 0.65rem;
+      opacity: 0.7;
+    }
+    
+    .btn:hover {
+      opacity: 1;
+    }
+    
+    .toolbar {
+      display: flex;
+      gap: 0.25rem;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    
+    .note:hover .toolbar {
+      opacity: 1;
+    }
+    
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      background: var(--bg-color);
+      padding: 1rem;
+      border-radius: 4px;
+      min-width: 300px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+    
+    .tag-input {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: var(--text-color);
+      padding: 0.25rem 0.5rem;
+      border-radius: 3px;
+      width: 100%;
+      font-size: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .tag-suggestions {
+      margin-top: 1rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 1rem;
+    }
+    
+    .suggestions-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    
+    .suggestions-header h4 {
+      font-size: 0.8rem;
+      font-weight: normal;
+      opacity: 0.7;
+    }
+    
+    .suggestions-content {
+      display: none;
+      max-height: 150px;
+      overflow-y: auto;
+      gap: 0.25rem;
+      flex-wrap: wrap;
+    }
+    
+    .suggestions-content.expanded {
+      display: flex;
+    }
+    
+    .suggestion-tag {
+      background: rgba(255,255,255,0.05);
+      padding: 0.1rem 0.25rem;
+      border-radius: 2px;
+      font-size: 0.65rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    
+    .suggestion-tag:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    
+    .tag-count {
+      background: rgba(255,255,255,0.1);
+      padding: 0.1rem 0.25rem;
+      border-radius: 2px;
+      font-size: 0.6rem;
+    }
+    
+    .suggestions-content::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .suggestions-content::-webkit-scrollbar-track {
+      background: rgba(255,255,255,0.05);
+    }
+    
+    .suggestions-content::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.1);
+      border-radius: 3px;
+    }
+    
+    @media (max-width: 768px) {
+      :root {
+        --note-size: 150px;
+      }
+      
+      .header {
+        flex-direction: column;
+        height: auto;
+        gap: 0.5rem;
+      }
+      
+      .search-bar {
+        width: 100%;
+      }
+    }
+    
+    .settings-input {
+      width: 100%;
+      padding: 0.5rem;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: var(--text-color);
+      border-radius: 3px;
+      margin: 0.5rem 0;
+    }
+    
+    .color-picker {
+      display: flex;
+      gap: 0.5rem;
+      margin: 0.5rem 0;
+    }
+    
+    .color-btn {
+      width: 24px;
+      height: 24px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    
+    .color-btn:hover {
+      transform: scale(1.1);
+    }
+    
+    .setting-group {
+      margin: 1rem 0;
+    }
+    
+    .setting-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      opacity: 0.7;
+    }
+    
+    /* Add styling for import/export selection */
+    .notes-selection {
+      max-height: 300px;
+      overflow-y: auto;
+      margin: 1rem 0;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 4px;
+      padding: 0.5rem;
+    }
+    
+    .note-select-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .note-select-item:last-child {
+      border-bottom: none;
+    }
+    
+    .note-select-item label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 1;
+      cursor: pointer;
+    }
+    
+    .note-select-checkbox {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+    
+    .note-preview {
+      font-size: 0.8rem;
+      opacity: 0.7;
+    }
+    
+    .select-all-row {
+      padding: 0.5rem;
+      border-bottom: 2px solid rgba(255,255,255,0.1);
+      margin-bottom: 0.5rem;
+    }
+    
+    /* Update import/export button styles */
+    #exportBtn::after {
+      content: '📤'; /* Change back to the export icon */
+    }
+    
+    #importBtn::after {
+      content: '📥'; /* Change back to the import icon */
+    }
+    
+    /* Add themed scrollbar styles */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: var(--bg-color);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(
+        45deg,
+        var(--accent-orange),
+        var(--accent-cyan),
+        var(--accent-pink)
+      );
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(
+        45deg,
+        var(--accent-cyan),
+        var(--accent-pink),
+        var(--accent-orange)
+      );
+    }
+    
+    /* Add confirmation modal styles */
+    .confirm-modal {
+      position: fixed;
+      background: var(--bg-color);
+      border: 1px solid var(--accent-cyan);
+      border-radius: 4px;
+      padding: 0.75rem;
+      font-size: 0.75rem;
+      z-index: 2000;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      display: none;
+    }
+    
+    .confirm-modal.active {
+      display: block;
+    }
+    
+    .confirm-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+      justify-content: flex-end;
+    }
+    
+    .confirm-btn {
+      padding: 0.25rem 0.5rem;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 0.7rem;
+    }
+    
+    .confirm-btn.confirm {
+      background: var(--accent-cyan);
+      color: var(--bg-color);
+    }
+    
+    .confirm-btn.cancel {
+      background: rgba(255,255,255,0.1);
+      color: var(--text-color);
+    }
+    
+    /* Theme tab styles */
+    .theme-selection {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin: 1rem 0;
+    }
+    
+    .theme-option {
+      width: 80px;
+      height: 80px;
+      border-radius: 8px;
+      cursor: pointer;
+      position: relative;
+      border: 2px solid transparent;
+      overflow: hidden;
+      transition: transform 0.2s;
+    }
+    
+    .theme-option:hover {
+      transform: scale(1.05);
+    }
+    
+    .theme-option.active {
+      border-color: var(--accent-cyan);
+    }
+    
+    .theme-option .theme-preview {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .theme-preview-header {
+      height: 20%;
+      background: rgba(255,255,255,0.1);
+    }
+    
+    .theme-preview-notes {
+      height: 80%;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2px;
+      padding: 2px;
+    }
+    
+    .theme-preview-note {
+      width: 25px;
+      height: 25px;
+      border-radius: 2px;
+    }
+    
+    .theme-name {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      font-size: 10px;
+      text-align: center;
+      padding: 2px 0;
+    }
+    
+    /* Settings tab styles - restoring these */
+    .settings-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 0.5rem;
+    }
+    
+    .settings-tab {
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      border-radius: 4px 4px 0 0;
+      font-size: 0.8rem;
+      opacity: 0.7;
+      transition: all 0.2s;
+    }
+    
+    .settings-tab:hover {
+      opacity: 1;
+      background: rgba(255,255,255,0.05);
+    }
+    
+    .settings-tab.active {
+      opacity: 1;
+      background: rgba(255,255,255,0.1);
+      font-weight: bold;
+    }
+    
+    .settings-panel {
+      display: none;
+    }
+    
+    .settings-panel.active {
+      display: block;
+    }
+    
+    /* Theme tab styles - keep this part but remove the redundant default option */
+    .theme-selection {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin: 1rem 0;
+    }
+    
+    .theme-option {
+      width: 80px;
+      height: 80px;
+      border-radius: 8px;
+      cursor: pointer;
+      position: relative;
+      border: 2px solid transparent;
+      overflow: hidden;
+      transition: transform 0.2s;
+    }
+    
+    .theme-option:hover {
+      transform: scale(1.05);
+    }
+    
+    .theme-option.active {
+      border-color: var(--accent-cyan);
+    }
+    
+    .theme-option .theme-preview {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .theme-preview-header {
+      height: 20%;
+      background: rgba(255,255,255,0.1);
+    }
+    
+    .theme-preview-notes {
+      height: 80%;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2px;
+      padding: 2px;
+    }
+    
+    .theme-preview-note {
+      width: 25px;
+      height: 25px;
+      border-radius: 2px;
+    }
+    
+    .theme-name {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      font-size: 10px;
+      text-align: center;
+      padding: 2px 0;
+    }
+    
+    /* Add tooltip styles */
+    .note-title-tooltip {
+      position: absolute;
+      background: var(--bg-color);
+      color: var(--text-color);
+      padding: 5px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      z-index: 100;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      max-width: 200px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    
+    /* Comic book theme tooltip */
+    body .note-title-tooltip {
+      border: var(--comic-note-border);
+      box-shadow: var(--comic-shadow);
+      background: white;
+      color: black;
+      font-family: 'Bangers', Arial, sans-serif;
+      transform: rotate(-1deg);
+    }
+    
+    /* Material theme tooltip */
+    body.material-theme .note-title-tooltip {
+      border: none;
+      box-shadow: var(--material-note-shadow);
+      background: white;
+      color: var(--material-text-color);
+      font-family: 'Roboto', Arial, sans-serif;
+      transform: none;
+      border-radius: var(--material-radius);
+    }
+    
+    /* Dark theme tooltip */
+    body.dark-theme .note-title-tooltip {
+      border: var(--dark-note-border);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      background: var(--dark-note-bg);
+      color: var(--dark-text-color);
+      font-family: 'Roboto', Arial, sans-serif;
+      transform: none;
+      border-radius: 4px;
+    }
+    
+    .note-title-tooltip.visible {
+      opacity: 1;
+    }
+    
+    /* Material and Roboto font imports */
+    @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Roboto:wght@400;500;700&display=swap');
+    </style>
+    </head>
+    <body>
+    <header class="header">
+      <h1>NotePinboard</h1>
+      <button class="add-note-btn">+ New Note</button>
+      <div class="search-controls">
+        <div class="search-mode-toggle">
+          <button class="mode-btn all active" title="Search everything"></button>
+          <button class="mode-btn text" title="Search text only"></button>
+          <button class="mode-btn tags" title="Search tags only"></button>
+        </div>
+        <input type="text" class="search-bar" data-mode="all" placeholder="Search notes or tags...">
+        <div class="settings-controls">
+          <button class="settings-btn btn" title="Settings">⚙️</button>
+        </div>
+      </div>
+    </header>
+    
+    <div class="toast"></div>
+    
+    <main class="pinboard" id="pinboard"></main>
+    
+    <!-- Tag Editor Modal -->
+    <div class="modal" id="tagModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Edit Tags</h3>
+          <button class="btn" id="closeModal">×</button>
+        </div>
+        <input type="text" class="tag-input" placeholder="Add new tag (press Enter)">
+        <div class="tag-list"></div>
+        <div class="tag-suggestions"></div>
+      </div>
+    </div>
+    
+    <!-- Settings Modal -->
+    <div class="modal" id="settingsModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Settings</h3>
+          <button class="btn" id="closeSettingsModal">×</button>
+        </div>
+        
+        <div class="settings-tabs">
+          <div class="settings-tab active" data-tab="general">General</div>
+          <div class="settings-tab" data-tab="themes">Themes</div>
+          <div class="settings-tab" data-tab="import-export">Import/Export</div>
+        </div>
+        
+        <div class="settings-body">
+          <!-- General Settings Panel -->
+          <div class="settings-panel active" id="general-panel">
+            <div class="setting-group">
+              <label>Background Image URL:</label>
+              <input type="url" id="bgImageUrl" class="settings-input" placeholder="https://example.com/image.jpg">
+            </div>
+            <div class="setting-group">
+              <label>Default Note Color:</label>
+              <div class="color-picker">
+                <button class="color-btn" data-color="var(--accent-orange)" style="background:var(--accent-orange)"></button>
+                <button class="color-btn" data-color="var(--accent-cyan)" style="background:var(--accent-cyan)"></button>
+                <button class="color-btn" data-color="var(--accent-pink)" style="background:var(--accent-pink)"></button>
+                <button class="color-btn" data-color="var(--note-red)" style="background:var(--note-red)"></button>
+                <button class="color-btn" data-color="var(--note-purple)" style="background:var(--note-purple)"></button>
+                <button class="color-btn" data-color="var(--note-blue)" style="background:var(--note-blue)"></button>
+                <button class="color-btn" data-color="var(--note-green)" style="background:var(--note-green)"></button>
+                <button class="color-btn" data-color="var(--note-yellow)" style="background:var(--note-yellow)"></button>
+                <button class="color-btn" data-color="var(--note-brown)" style="background:var(--note-brown)"></button>
+                <button class="color-btn" data-color="var(--note-light-gray)" style="background:var(--note-light-gray)"></button>
+                <button class="color-btn" data-color="var(--note-magenta)" style="background:var(--note-magenta)"></button>
+                <button class="color-btn" data-color="var(--note-lilac)" style="background:var(--note-lilac)"></button>
+                <button class="color-btn" data-color="var(--note-fuchsia)" style="background:var(--note-fuchsia)"></button>
+                <button class="color-btn" data-color="var(--note-hot-pink)" style="background:var(--note-hot-pink)"></button>
+                <button class="color-btn" data-color="var(--note-mint-green)" style="background:var(--note-mint-green)"></button>
+                <button class="color-btn" data-color="var(--note-rose)" style="background:var(--note-rose)"></button>
+                <button class="color-btn" data-color="var(--note-burnt-orange)" style="background:var(--note-burnt-orange)"></button>
+                <button class="color-btn" data-color="var(--note-sky-blue)" style="background:var(--note-sky-blue)"></button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Themes Panel -->
+          <div class="settings-panel" id="themes-panel">
+            <div class="setting-group">
+              <label>Select Theme:</label>
+              <div class="theme-selection">            
+                <div class="theme-option theme-comic active" data-theme="default">
+                  <div class="theme-preview">
+                    <div class="theme-preview-header"></div>
+                    <div class="theme-preview-notes">
+                      <div class="theme-preview-note"></div>
+                      <div class="theme-preview-note"></div>
+                      <div class="theme-preview-note"></div>
+                      <div class="theme-preview-note"></div>
+                    </div>
+                  </div>
+                  <div class="theme-name">Comic Book</div>
+                </div>
+                
+                <div class="theme-option theme-material" data-theme="material">
+                  <div class="theme-preview">
+                    <div class="theme-preview-header"></div>
+                    <div class="theme-preview-notes">
+                      <div class="theme-preview-note"></div>
+                      <div class="theme-preview-note"></div>
+                      <div class="theme-preview-note"></div>
+                      <div class="theme-preview-note"></div>
+                    </div>
+                  </div>
+                  <div class="theme-name">Material</div>
+                </div>
+                
+                <div class="theme-option theme-dark" data-theme="dark">
+                  <div class="theme-preview">
+                    <div class="theme-preview-header"></div>
+                    <div class="theme-preview-notes">
+                      <div class="theme-preview-note"></div>
+                      <div class="theme-preview-note"></div>
+                      <div class="theme-preview-note"></div>
+                      <div class="theme-preview-note"></div>
+                    </div>
+                  </div>
+                  <div class="theme-name">Dark Mode</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Import/Export Panel -->
+          <div class="settings-panel" id="import-export-panel">
+            <div class="setting-group">
+              <label>Import/Export All Data:</label>
+              <div style="display: flex; gap: 0.5rem;">
+                <button class="btn" id="exportAllBtn" title="Export all data">📤 Export All</button>
+                <button class="btn" id="importAllBtn" title="Import all data">📥 Import All</button>
+                <input type="file" id="dataInput" accept=".json" style="display: none;">
+              </div>
+            </div>
+            
+            <div class="setting-group">
+              <label>Import Options:</label>
+              <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                  <input type="radio" name="importMode" value="replace" checked>
+                  <span>Replace all existing data</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                  <input type="radio" name="importMode" value="append">
+                  <span>Append to existing data</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                  <input type="radio" name="importMode" value="append-new">
+                  <span>Append new notes only (skip duplicates)</span>
+                </label>
+              </div>
+            </div>
+            
+            <div class="setting-group">
+              <label>Notes Export/Import:</label>
+              <div style="display: flex; gap: 0.5rem;">
+                <button class="btn" id="exportBtn" title="Export to CSV">📤 Notes CSV</button>
+                <button class="btn" id="importBtn" title="Import from CSV">📥 Notes CSV</button>
+                <input type="file" id="csvInput" accept=".csv" style="display: none;">
+              </div>
+            </div>
+            
+            <div class="setting-group">
+              <label>Data Management:</label>
+              <div style="display: flex; gap: 0.5rem;">
+                <button class="btn confirm-needed" id="purgeDataBtn" title="Reset app to default state">🗑️ Reset App Data</button>
+              </div>
+              <p style="font-size: 0.8rem; margin-top: 0.5rem; color: var(--accent-orange);">Warning: This will delete all notes and settings.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Add confirmation modal -->
+    <div class="confirm-modal">
+      <div class="confirm-message"></div>
+      <div class="confirm-actions">
+        <button class="confirm-btn cancel">Cancel</button>
+        <button class="confirm-btn confirm">Confirm</button>
+      </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+    <script>
+    class NotePinboard {
+      constructor() {
+        this.dbName = 'notePinboardDB';
+        this.dbVersion = 1;
+        this.db = null;
+        this.notes = []; // Initialize notes array
+        
+        // Initialize element references 
+        this.pinboard = document.getElementById('pinboard');
+        this.searchBar = document.querySelector('.search-bar');
+        this.addNoteBtn = document.querySelector('.add-note-btn');
+        this.tagModal = document.getElementById('tagModal');
+        this.settingsModal = document.getElementById('settingsModal');
+        this.searchMode = 'all'; // Initialize search mode
+        this.toast = document.querySelector('.toast'); // Add reference to toast element
+    
+        this.initDB().then(() => {
+          this.loadSettings();
+          this.setupEventListeners();
+          this.loadNotes();
+          this.setupDragAndDrop();
+          this.setupSearchMode();
+          this.setupSettingsModal();
+        });
+      }
+    
+      async initDB() {
+        return new Promise((resolve, reject) => {
+          const request = indexedDB.open(this.dbName, this.dbVersion);
+    
+          request.onerror = () => {
+            console.error('Error opening database:', request.error);
+            reject(request.error);
+          };
+    
+          request.onsuccess = (event) => {
+            this.db = event.target.result;
+            resolve();
+          };
+    
+          request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+    
+            // Create object stores if they don't exist
+            if (!db.objectStoreNames.contains('notes')) {
+              const notesStore = db.createObjectStore('notes', { keyPath: 'id' });
+              notesStore.createIndex('title', 'title', { unique: false });
+              notesStore.createIndex('tags', 'tags', { unique: false, multiEntry: true });
+            }
+    
+            if (!db.objectStoreNames.contains('settings')) {
+              const settingsStore = db.createObjectStore('settings', { keyPath: 'key' });
+            }
+          };
+        });
+      }
+    
+      setupEventListeners() {
+        // Add note with button
+        this.addNoteBtn.addEventListener('click', () => this.addNote());
+    
+        // Search functionality
+        this.searchBar.addEventListener('input', () => this.filterNotes());
+    
+        // Tag modal close button
+        const closeModalBtn = document.getElementById('closeModal');
+        if (closeModalBtn) {
+          closeModalBtn.addEventListener('click', () => {
+            this.tagModal.classList.remove('active');
+          });
+        }
+    
+        // Tag input in modal
+        const tagInput = this.tagModal.querySelector('.tag-input');
+        if (tagInput) {
+          tagInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && tagInput.value.trim()) {
+              this.addTag(tagInput.value.trim());
+              tagInput.value = '';
+            }
+          });
+        }
+    
+        // Setup settings tabs
+        const tabButtons = document.querySelectorAll('.settings-tab');
+        
+        tabButtons.forEach(button => {
+          button.addEventListener('click', () => {
+            const tabId = button.dataset.tab;
+            
+            // Deactivate all tabs and panels
+            document.querySelectorAll('.settings-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.settings-panel').forEach(panel => panel.classList.remove('active'));
+            
+            // Activate the clicked tab and its panel
+            button.classList.add('active');
+            document.getElementById(`${tabId}-panel`).classList.add('active');
+          });
+        });
+    
+        // Setup theme selection
+        const themeOptions = document.querySelectorAll('.theme-option');
+        themeOptions.forEach(option => {
+          option.addEventListener('click', async () => {
+            const theme = option.dataset.theme;
+            
+            // Update UI
+            themeOptions.forEach(opt => opt.classList.remove('active'));
+            option.classList.add('active');
+            
+            // Apply theme
+            await this.applyTheme(theme);
+            
+            // Save to DB
+            await this.saveToDb('settings', 'theme', theme);
+          });
+        });
+        
+        // Setup confirmation needed buttons
+        document.querySelectorAll('.confirm-needed').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const originalAction = e.currentTarget.onclick;
+            e.currentTarget.onclick = null;
+            
+            const message = e.currentTarget.id === 'purgeDataBtn' 
+              ? 'This will delete all your notes and settings. Are you sure?' 
+              : 'Are you sure you want to proceed?';
+              
+            this.showConfirmModal(message, (confirmed) => {
+              if (confirmed) {
+                if (e.currentTarget.id === 'purgeDataBtn') {
+                  this.purgeAllData();
+                } else if (originalAction) {
+                  originalAction.call(this);
+                }
+              }
+            });
+          });
+        });
+      }
+    
+      async loadSettings() {
+        try {
+          // Try to load from localStorage first, then fallback to DB
+          let bgImageUrl = localStorage.getItem('bgImageUrl');
+          let defaultNoteColor = localStorage.getItem('defaultNoteColor');
+          let theme = localStorage.getItem('theme');
+          
+          if (!bgImageUrl) {
+            bgImageUrl = await this.getFromDb('settings', 'bgImageUrl');
+            if (bgImageUrl) localStorage.setItem('bgImageUrl', bgImageUrl);
+          }
+          
+          if (!defaultNoteColor) {
+            defaultNoteColor = await this.getFromDb('settings', 'defaultNoteColor');
+            if (defaultNoteColor) localStorage.setItem('defaultNoteColor', defaultNoteColor);
+          }
+          
+          if (!theme) {
+            theme = await this.getFromDb('settings', 'theme');
+            if (theme) localStorage.setItem('theme', theme);
+          }
+          
+          // Apply settings if they exist
+          if (bgImageUrl) {
+            document.body.style.backgroundImage = `url(${bgImageUrl})`;
+            document.getElementById('bgImageUrl').value = bgImageUrl;
+          }
+    
+          if (defaultNoteColor) {
+            // Update color picker UI to show selected color
+            const colorBtns = document.querySelectorAll('.color-btn');
+            colorBtns.forEach(btn => {
+              if (btn.dataset.color === defaultNoteColor) {
+                btn.classList.add('active');
+              } else {
+                btn.classList.remove('active');
+              }
+            });
+          }
+    
+          // Load theme - default to "default" (which is comic book)
+          await this.applyTheme(theme || 'default');
+          
+          // Update theme selection UI
+          const themeOptions = document.querySelectorAll('.theme-option');
+          themeOptions.forEach(option => {
+            option.classList.remove('active');
+            if (option.dataset.theme === (theme || 'default')) {
+              option.classList.add('active');
+            }
+          });
+        } catch (err) {
+          console.error('Error loading settings:', err);
+        }
+      }
+    
+      async applyTheme(theme) {
+        // Remove any existing theme classes
+        document.body.classList.remove('comic-theme', 'material-theme', 'dark-theme');
+        
+        // Apply the new theme class
+        switch(theme) {
+          case 'comic':
+            document.body.classList.add('comic-theme');
+            break;
+          case 'material':
+            document.body.classList.add('material-theme');
+            break;
+          case 'dark':
+            document.body.classList.add('dark-theme');
+            break;
+          // default theme is now comic, so set that
+          case 'default':
+          default:
+            // Comic is now the default, so no class needed as we've set those styles as base
+            break;
+        }
+      }
+    
+      setupSettingsModal() {
+        const settingsModal = document.getElementById('settingsModal');
+        const closeBtn = document.getElementById('closeSettingsModal');
+        const bgImageUrl = document.getElementById('bgImageUrl');
+        const colorBtns = document.querySelectorAll('.color-btn');
+        const exportBtn = document.getElementById('exportBtn');
+        const importBtn = document.getElementById('importBtn');
+        const csvInput = document.getElementById('csvInput');
+        const exportAllBtn = document.getElementById('exportAllBtn');
+        const importAllBtn = document.getElementById('importAllBtn');
+        const dataInput = document.getElementById('dataInput');
+        const purgeDataBtn = document.getElementById('purgeDataBtn');
+    
+        // Close button handler
+        if (closeBtn) {
+          closeBtn.addEventListener('click', () => {
+            settingsModal.classList.remove('active');
+          });
+        }
+    
+        // Background image URL handler
+        if (bgImageUrl) {
+          bgImageUrl.addEventListener('change', async () => {
+            const url = bgImageUrl.value;
+            document.body.style.backgroundImage = url ? `url(${url})` : 'none';
+            localStorage.setItem('bgImageUrl', url);
+            await this.saveToDb('settings', 'bgImageUrl', url);
+          });
+        }
+    
+        // Color picker handlers
+        colorBtns.forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const color = btn.dataset.color;
+            localStorage.setItem('defaultNoteColor', color);
+            await this.saveToDb('settings', 'defaultNoteColor', color);
+            
+            // Update UI
+            colorBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+          });
+        });
+    
+        // Settings button handler
+        const settingsBtn = document.querySelector('.settings-btn');
+        if (settingsBtn) {
+          settingsBtn.addEventListener('click', () => {
+            settingsModal.classList.add('active');
+          });
+        }
+    
+        // Export/Import CSV handlers
+        if (exportBtn) {
+          exportBtn.addEventListener('click', () => {
+            this.exportToCSV(this.notes);
+          });
+        }
+    
+        if (importBtn) {
+          importBtn.addEventListener('click', () => {
+            csvInput.click();
+          });
+        }
+    
+        if (csvInput) {
+          csvInput.addEventListener('change', (e) => {
+            if (e.target.files.length) {
+              this.importFromCSV(e.target.files[0]);
+            }
+          });
+        }
+        
+        // Export/Import All Data handlers
+        if (exportAllBtn) {
+          exportAllBtn.addEventListener('click', () => {
+            this.exportAllData();
+          });
+        }
+        
+        if (importAllBtn) {
+          importAllBtn.addEventListener('click', () => {
+            dataInput.click();
+          });
+        }
+        
+        if (dataInput) {
+          dataInput.addEventListener('change', (e) => {
+            if (e.target.files.length) {
+              this.importAllData(e.target.files[0]);
+            }
+          });
+        }
+        
+        // Purge data button
+        if (purgeDataBtn) {
+          purgeDataBtn.addEventListener('click', () => {
+            // This is now handled by the confirm-needed class
+          });
+        }
+      }
+    
+      async saveToDb(storeName, key, value) {
+        return new Promise((resolve, reject) => {
+          try {
+            const transaction = this.db.transaction(storeName, 'readwrite');
+            const store = transaction.objectStore(storeName);
+            
+            let request;
+            if (storeName === 'settings') {
+              // For settings store, wrap value in object with key
+              request = store.put({
+                key: key,
+                value: value
+              });
+            } else {
+              // For notes store, save array directly
+              request = store.put(value);
+            }
+            
+            request.onsuccess = () => {
+              resolve();
+            };
+            request.onerror = () => reject(request.error);
+          } catch (err) {
+            console.error('Error saving to DB:', err);
+            reject(err);
+          }
+        });
+      }
+    
+      async getFromDb(storeName, key) {
+        return new Promise((resolve, reject) => {
+          try {
+            const transaction = this.db.transaction(storeName, 'readonly');
+            const store = transaction.objectStore(storeName);
+            
+            let request;
+            if (key) {
+              request = store.get(key);
+            } else {
+              request = store.getAll();
+            }
+            
+            request.onsuccess = () => {
+              if (storeName === 'settings' && request.result) {
+                // For settings store, unwrap value from object
+                resolve(request.result.value);
+              } else {
+                resolve(request.result);
+              }
+            };
+            request.onerror = () => reject(request.error);
+          } catch (err) {
+            console.error('Error getting from DB:', err);
+            reject(err);
+          }
+        });
+      }
+    
+      async saveNotes() {
+        // Also save to localStorage for backup/quick access
+        try {
+          // Clear existing notes
+          const transaction = this.db.transaction('notes', 'readwrite');
+          const store = transaction.objectStore('notes');
+          
+          await new Promise((resolve, reject) => {
+            const request = store.clear();
+            request.onsuccess = resolve;
+            request.onerror = reject;
+          });
+          
+          // Add all notes
+          for (const note of this.notes) {
+            await new Promise((resolve, reject) => {
+              const request = store.put(note);
+              request.onsuccess = resolve;
+              request.onerror = reject;
+            });
+          }
+          
+          // Save to localStorage
+          this.saveNotesToLocalStorage();
+          
+          this.showToast('Notes saved');
+        } catch (err) {
+          console.error('Error saving notes:', err);
+          this.showToast('Error saving notes');
+        }
+      }
+      
+      saveNotesToLocalStorage() {
+        try {
+          // Limit to 5MB to avoid exceeding localStorage limits
+          const notesJson = JSON.stringify(this.notes);
+          if (notesJson.length < 5000000) { // 5MB approx limit
+            localStorage.setItem('notes', notesJson);
+          }
+        } catch (err) {
+          console.warn('Could not save notes to localStorage:', err);
+        }
+      }
+    
+      async loadNotes() {
+        try {
+          // Try localStorage first for faster loading
+          let notes = [];
+          const notesJson = localStorage.getItem('notes');
+          if (notesJson) {
+            try {
+              notes = JSON.parse(notesJson);
+            } catch (e) {
+              console.warn('Failed to parse notes from localStorage');
+            }
+          }
+          
+          // If no notes in localStorage, try DB
+          if (!notes || !notes.length) {
+            notes = await this.getFromDb('notes') || [];
+          }
+          
+          if (notes.length) {
+            this.notes = notes;
+            notes.forEach(note => this.createNoteElement(note));
+          } else {
+            // Create welcome note if no notes exist
+            this.createNote({ 
+              title: 'Welcome!', 
+              content: 'Drag notes to rearrange them.',
+              tags: ['welcome', 'help']
+            });
+          }
+        } catch (err) {
+          console.error('Error loading notes:', err);
+          this.showToast('Error loading notes');
+        }
+      }
+    
+      addNote() {
+        this.createNote();
+      }
+    
+      setupDragAndDrop() {
+        new Sortable(this.pinboard, {
+          animation: 150,
+          ghostClass: 'note-ghost',
+          handle: '.note-header', // Only drag from header
+          onEnd: () => this.saveNotes()
+        });
+      }
+    
+      createNote(data = {}) {
+        const note = {
+          id: Date.now(),
+          title: data.title || 'New Note',
+          content: data.content || '',
+          tags: data.tags || [],
+          color: data.color || this.getRandomColor(),
+          expanded: Boolean(data.expanded)
+        };
+        
+        this.notes.push(note);
+        this.createNoteElement(note);
+        this.saveNotes();
+        return note;
+      }
+    
+      createNoteElement(note) {
+        const noteEl = document.createElement('div');
+        noteEl.className = 'note';
+        noteEl.dataset.id = note.id;
+        noteEl.innerHTML = `
+          <div class="note-header" style="background: ${note.color}">
+            <input class="note-title" value="${note.title}">
+            <div class="toolbar">
+              <button class="btn color-picker-btn" title="Change Color">🎨</button>
+              <button class="btn tags-btn" title="Edit Tags">🏷️</button>
+              <button class="btn expand-btn" title="Expand Note">↕️</button>
+              <button class="btn copy-btn" title="Copy Content">📋</button>
+              <button class="btn paste-btn" title="Paste Content">📄</button>
+              <button class="btn delete-btn" title="Delete Note">🗑️</button>
+            </div>
+          </div>
+          <div class="note-content">
+            <div class="note-content-title">${note.title}</div>
+            <textarea class="note-textarea">${note.content}</textarea>
+            <div class="note-tags">
+              ${note.tags.map(tag => `<span class="tag">#${tag}</span>`).join('')}
+            </div>
+          </div>
+        `;
+    
+        // Add logic to update content title when main title changes
+        const titleInput = noteEl.querySelector('.note-title');
+        const contentTitle = noteEl.querySelector('.note-content-title');
+        titleInput.addEventListener('input', async () => {
+          note.title = titleInput.value;
+          contentTitle.textContent = note.title;
+          await this.saveNotes();
+        });
+    
+        // Apply expanded state if needed
+        if (note.expanded) {
+          noteEl.classList.add('expanded');
+        }
+    
+        this.setupNoteEvents(noteEl, note);
+        this.pinboard.appendChild(noteEl);
+      }
+    
+      setupNoteEvents(noteEl, note) {
+        const title = noteEl.querySelector('.note-title');
+        const content = noteEl.querySelector('.note-textarea');
+        const expandBtn = noteEl.querySelector('.expand-btn');
+        const copyBtn = noteEl.querySelector('.copy-btn');
+        const pasteBtn = noteEl.querySelector('.paste-btn');
+        const deleteBtn = noteEl.querySelector('.delete-btn');
+        const tagsBtn = noteEl.querySelector('.tags-btn');
+        const colorBtn = noteEl.querySelector('.color-picker-btn');
+        const tagsContainer = noteEl.querySelector('.note-tags');
+    
+        title.addEventListener('mouseenter', (e) => {
+          // Create tooltip if it doesn't exist
+          let tooltip = document.querySelector('.note-title-tooltip');
+          if (!tooltip) {
+            tooltip = document.createElement('div');
+            tooltip.className = 'note-title-tooltip';
+            document.body.appendChild(tooltip);
+          }
+          
+          // Set content and position
+          tooltip.textContent = title.value;
+          const rect = title.getBoundingClientRect();
+          tooltip.style.top = `${rect.bottom + 5}px`;
+          tooltip.style.left = `${rect.left}px`;
+          
+          // Show tooltip
+          setTimeout(() => tooltip.classList.add('visible'), 10);
+        });
+        
+        title.addEventListener('mouseleave', () => {
+          const tooltip = document.querySelector('.note-title-tooltip');
+          if (tooltip) {
+            tooltip.classList.remove('visible');
+          }
+        });
+    
+        title.addEventListener('change', async () => {
+          note.title = title.value;
+          await this.saveNotes();
+        });
+        
+        expandBtn.addEventListener('click', () => {
+          noteEl.classList.toggle('expanded');
+          note.expanded = noteEl.classList.contains('expanded');
+          this.saveNotes();
+        });
+    
+        copyBtn.addEventListener('click', () => {
+          navigator.clipboard.writeText(content.value);
+          this.showToast('Content copied!');
+        });
+    
+        pasteBtn.addEventListener('click', async () => {
+          try {
+            const text = await navigator.clipboard.readText();
+            content.value = text;
+            note.content = text;
+            await this.saveNotes();
+            this.showToast('Content pasted!');
+          } catch (err) {
+            this.showToast('Failed to paste content');
+          }
+        });
+    
+        deleteBtn.addEventListener('click', () => {
+          this.showConfirmModal('Delete this note?', (confirmed) => {
+            if (confirmed) {
+              noteEl.remove();
+              this.notes = this.notes.filter(n => n.id !== note.id);
+              this.saveNotes();
+            }
+          });
+        });
+    
+        tagsBtn.addEventListener('click', () => {
+          this.openTagEditor(note);
+        });
+    
+        tagsContainer.addEventListener('click', (e) => {
+          if (e.target === tagsContainer) {
+            this.openTagEditor(note);
+          } else if (e.target.classList.contains('tag')) {
+            const tag = e.target.textContent.slice(1);
+            this.searchBar.value = tag;
+            this.filterNotes();
+          }
+        });
+    
+        // Add double click event to open tag editor
+        tagsContainer.addEventListener('dblclick', () => {
+          this.openTagEditor(note);
+        });
+    
+        colorBtn.addEventListener('click', async () => {
+          const colors = ['var(--accent-orange)', 'var(--accent-cyan)', 'var(--accent-pink)', 'var(--note-red)', 'var(--note-purple)', 'var(--note-blue)', 'var(--note-green)', 'var(--note-yellow)', 'var(--note-brown)', 'var(--note-light-gray)', 'var(--note-magenta)', 'var(--note-lilac)', 'var(--note-fuchsia)', 'var(--note-hot-pink)', 'var(--note-mint-green)', 'var(--note-rose)', 'var(--note-burnt-orange)', 'var(--note-sky-blue)'];
+          const currentIndex = colors.indexOf(note.color);
+          note.color = colors[(currentIndex + 1) % colors.length];
+          noteEl.querySelector('.note-header').style.background = note.color;
+          await this.saveNotes();
+        });
+      }
+    
+      setupSearchMode() {
+        const modeBtns = document.querySelectorAll('.mode-btn');
+        
+        modeBtns.forEach(btn => {
+          btn.addEventListener('click', () => {
+            // Remove active class from all buttons
+            modeBtns.forEach(b => b.classList.remove('active'));
+            
+            // Add active class to clicked button
+            btn.classList.add('active');
+            
+            // Update search mode
+            if (btn.classList.contains('all')) {
+              this.searchMode = 'all';
+              this.searchBar.dataset.mode = 'all';
+            } else if (btn.classList.contains('text')) {
+              this.searchMode = 'text';
+              this.searchBar.dataset.mode = 'text';
+            } else if (btn.classList.contains('tags')) {
+              this.searchMode = 'tags';
+              this.searchBar.dataset.mode = 'tags';
+            }
+            
+            // Refilter notes with new mode
+            this.filterNotes();
+          });
+        });
+      }
+    
+      filterNotes() {
+        const query = this.searchBar.value.toLowerCase();
+        const notes = document.querySelectorAll('.note');
+        
+        notes.forEach(noteEl => {
+          const note = this.notes.find(n => n.id === parseInt(noteEl.dataset.id));
+          let matchesSearch = false;
+          
+          switch(this.searchMode) {
+            case 'all':
+              matchesSearch = 
+                note.title.toLowerCase().includes(query) ||
+                note.content.toLowerCase().includes(query) ||
+                note.tags.some(tag => tag.toLowerCase().includes(query));
+              break;
+            case 'text':
+              matchesSearch = 
+                note.title.toLowerCase().includes(query) ||
+                note.content.toLowerCase().includes(query);
+              break;
+            case 'tags':
+              matchesSearch = 
+                note.tags.some(tag => tag.toLowerCase().includes(query));
+              break;
+          }
+          
+          noteEl.style.display = matchesSearch ? 'block' : 'none';
+        });
+      }
+    
+      async importFromCSV(file) {
+        try {
+          const text = await file.text();
+          const rows = text.split('\n').filter(row => row.trim()); // Remove empty rows
+          
+          if (rows.length < 2) { // Check if we have header + at least one data row
+            this.showToast('Invalid CSV file: No data found');
+            return;
+          }
+    
+          const headers = rows[0].toLowerCase().split(',');
+          const requiredHeaders = ['id', 'title', 'content', 'tags', 'color'];
+          
+          // Validate headers
+          if (!requiredHeaders.every(header => headers.includes(header))) {
+            this.showToast('Invalid CSV file: Missing required columns');
+            return;
+          }
+    
+          const importedNotes = rows.slice(1)
+            .map(row => {
+              try {
+                // Enhanced CSV parsing to handle quotes and commas properly
+                const values = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+                if (!values || values.length < 5) return null;
+    
+                const id = parseInt(values[0].replace(/"/g, ''));
+                if (isNaN(id)) return null;
+    
+                return {
+                  id,
+                  title: values[1].replace(/"/g, '') || 'Untitled',
+                  content: values[2].replace(/"/g, '') || '',
+                  tags: (values[3].replace(/"/g, '') || '').split(';').filter(tag => tag),
+                  color: values[4].replace(/"/g, '') || this.getRandomColor(),
+                  expanded: values[5] ? values[5].toLowerCase() === 'true' : false
+                };
+              } catch (err) {
+                console.warn('Error parsing row:', row, err);
+                return null;
+              }
+            })
+            .filter(note => note !== null);
+    
+          if (importedNotes.length === 0) {
+            this.showToast('No valid notes found in CSV file');
+            return;
+          }
+    
+          // Create modal content with selection options
+          const modalContent = document.createElement('div');
+          modalContent.innerHTML = `
+            <div class="notes-selection">
+              <div class="select-all-row">
+                <label>
+                  <input type="checkbox" class="note-select-checkbox" id="selectAll" checked>
+                  Select All Notes (${importedNotes.length})
+                </label>
+              </div>
+              ${importedNotes.map(note => `
+                <div class="note-select-item">
+                  <label>
+                    <input type="checkbox" class="note-select-checkbox" data-id="${note.id}" checked>
+                    <span class="note-preview">${note.title || 'Untitled'} (${note.tags.length} tags)</span>
+                  </label>
+                </div>
+              `).join('')}
+            </div>
+          `;
+    
+          // Add event listener for select all checkbox
+          const selectAll = modalContent.querySelector('#selectAll');
+          const checkboxes = modalContent.querySelectorAll('.note-select-checkbox[data-id]');
+          
+          selectAll.addEventListener('change', () => {
+            checkboxes.forEach(cb => cb.checked = selectAll.checked);
+          });
+    
+          // Get the selected import mode from the settings
+          const importMode = document.querySelector('input[name="importMode"]:checked')?.value || 'replace';
+    
+          // Show the confirmation modal with the selection options
+          this.showConfirmModal('Select notes to import:', async (confirmed) => {
+            if (confirmed) {
+              const selectedIds = Array.from(checkboxes)
+                .filter(cb => cb.checked)
+                .map(cb => parseInt(cb.dataset.id));
+              
+              const selectedNotes = importedNotes.filter(note => selectedIds.includes(note.id));
+              
+              if (selectedNotes.length === 0) {
+                this.showToast('Please select at least one note to import');
+                return;
+              }
+    
+              let notesToRender = [];
+    
+              if (importMode === 'replace') {
+                // Replace all existing notes
+                this.notes = selectedNotes;
+                this.pinboard.innerHTML = '';
+                notesToRender = selectedNotes;
+              } else if (importMode === 'append-new') {
+                // Append only notes that don't already exist (by title)
+                const existingTitles = this.notes.map(n => n.title.toLowerCase());
+                const newNotes = selectedNotes.filter(n => !existingTitles.includes(n.title.toLowerCase()));
+                
+                // Ensure unique IDs for new notes
+                const maxId = Math.max(...this.notes.map(n => n.id), 0);
+                newNotes.forEach((note, index) => {
+                  note.id = maxId + index + 1;
+                });
+                
+                this.notes.push(...newNotes);
+                notesToRender = newNotes; // Update to only render the new ones
+              } else {
+                // Standard append mode - ensure unique IDs
+                const maxId = Math.max(...this.notes.map(n => n.id), 0);
+                selectedNotes.forEach((note, index) => {
+                  note.id = maxId + index + 1;
+                });
+                this.notes.push(...selectedNotes);
+                notesToRender = selectedNotes;
+              }
+    
+              // Render the notes and save to database
+              notesToRender.forEach(note => this.createNoteElement(note));
+              await this.saveNotes();
+              this.showToast(`Imported ${notesToRender.length} notes successfully!`);
+              
+              // Close the settings modal after successful import
+              document.getElementById('settingsModal').classList.remove('active');
+            }
+          }, modalContent);
+    
+        } catch (err) {
+          console.error('Error importing CSV:', err);
+          this.showToast('Error importing CSV file');
+        }
+      }
+    
+      async exportToCSV(notes) {
+        try {
+          // Prepare CSV data with headers
+          let csvContent = 'id,title,content,tags,color,expanded\n';
+          
+          notes.forEach(note => {
+            // Format each field properly for CSV
+            const formattedTitle = `"${note.title.replace(/"/g, '""')}"`;
+            const formattedContent = `"${note.content.replace(/"/g, '""')}"`;
+            const formattedTags = `"${note.tags.join(';')}"`;
+            
+            csvContent += `${note.id},${formattedTitle},${formattedContent},${formattedTags},${note.color},${note.expanded}\n`;
+          });
+          
+          // Create a blob and download link
+          const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          
+          link.setAttribute('href', url);
+          link.setAttribute('download', 'notes_export.csv');
+          link.style.display = 'none';
+          
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          
+          this.showToast('Notes exported successfully!');
+        } catch (err) {
+          console.error('Error exporting to CSV:', err);
+          this.showToast('Error exporting notes');
+        }
+      }
+      
+      async exportAllData() {
+        try {
+          // Collect all data to export
+          const allData = {
+            notes: this.notes,
+            settings: {}
+          };
+          
+          // Get all settings from DB
+          const transaction = this.db.transaction('settings', 'readonly');
+          const store = transaction.objectStore('settings');
+          const request = store.getAll();
+          
+          await new Promise((resolve, reject) => {
+            request.onsuccess = () => {
+              // Convert settings array to object
+              request.result.forEach(setting => {
+                allData.settings[setting.key] = setting.value;
+              });
+              resolve();
+            };
+            request.onerror = reject;
+          });
+          
+          // Include localStorage data too
+          ['theme', 'bgImageUrl', 'defaultNoteColor'].forEach(key => {
+            if (localStorage.getItem(key) && !allData.settings[key]) {
+              allData.settings[key] = localStorage.getItem(key);
+            }
+          });
+          
+          // Create a blob and download link
+          const blob = new Blob([JSON.stringify(allData, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          
+          link.setAttribute('href', url);
+          link.setAttribute('download', 'notepinboard_backup.json');
+          link.style.display = 'none';
+          
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          
+          this.showToast('All data exported successfully!');
+        } catch (err) {
+          console.error('Error exporting all data:', err);
+          this.showToast('Error exporting data');
+        }
+      }
+      
+      async importAllData(file) {
+        try {
+          const text = await file.text();
+          const data = JSON.parse(text);
+          
+          if (!data.notes || !Array.isArray(data.notes)) {
+            this.showToast('Invalid data format: Missing notes array');
+            return;
+          }
+          
+          // Get the import mode
+          const importMode = document.querySelector('input[name="importMode"]:checked')?.value || 'replace';
+          
+          // Create modal content with selection options
+          const modalContent = document.createElement('div');
+          modalContent.innerHTML = `
+            <div style="margin-bottom: 1rem;">
+              <h4>Import Data Preview:</h4>
+              <p>${data.notes.length} Notes</p>
+              <p>${Object.keys(data.settings || {}).length} Settings</p>
+            </div>
+            <div class="notes-selection">
+              <div class="select-all-row">
+                <label>
+                  <input type="checkbox" id="importSettings" checked>
+                  Import Settings (theme, colors, background)
+                </label>
+              </div>
+              <div class="select-all-row">
+                <label>
+                  <input type="checkbox" id="importNotes" checked>
+                  Import Notes
+                </label>
+              </div>
+            </div>
+          `;
+          
+          // Add event listener for select all checkbox
+          const importSettings = modalContent.querySelector('#importSettings');
+          const importNotes = modalContent.querySelector('#importNotes');
+          
+          // Show the confirmation modal with options
+          this.showConfirmModal('Select data to import:', async (confirmed) => {
+            if (confirmed) {
+              const importSettingsChecked = importSettings.checked;
+              const importNotesChecked = importNotes.checked;
+              
+              // Process settings
+              if (importSettingsChecked && data.settings) {
+                // Update localStorage
+                for (const [key, value] of Object.entries(data.settings)) {
+                  localStorage.setItem(key, value);
+                  await this.saveToDb('settings', key, value);
+                }
+                
+                // Apply settings immediately
+                await this.loadSettings();
+              }
+              
+              // Process notes
+              if (importNotesChecked && data.notes.length > 0) {
+                if (importMode === 'replace') {
+                  // Replace all notes
+                  this.notes = [...data.notes];
+                  this.pinboard.innerHTML = '';
+                  data.notes.forEach(note => this.createNoteElement(note));
+                } else if (importMode === 'append-new') {
+                  // Append only new notes (by title)
+                  const existingTitles = this.notes.map(n => n.title.toLowerCase());
+                  const newNotes = data.notes.filter(n => !existingTitles.includes(n.title.toLowerCase()));
+                  
+                  // Ensure unique IDs
+                  const maxId = Math.max(...this.notes.map(n => n.id), 0);
+                  newNotes.forEach((note, index) => {
+                    note.id = maxId + index + 1;
+                  });
+                  
+                  this.notes.push(...newNotes);
+                  newNotes.forEach(note => this.createNoteElement(note));
+                } else {
+                  // Append all notes with new IDs
+                  const maxId = Math.max(...this.notes.map(n => n.id), 0);
+                  data.notes.forEach((note, index) => {
+                    note.id = maxId + index + 1;
+                  });
+                  
+                  this.notes.push(...data.notes);
+                  data.notes.forEach(note => this.createNoteElement(note));
+                }
+                
+                await this.saveNotes();
+              }
+              
+              this.showToast('Data imported successfully!');
+              document.getElementById('settingsModal').classList.remove('active');
+            }
+          }, modalContent);
+          
+        } catch (err) {
+          console.error('Error importing data:', err);
+          this.showToast('Error importing data file');
+        }
+      }
+      
+      async purgeAllData() {
+        try {
+          // Clear localStorage
+          localStorage.clear();
+          
+          // Clear IndexedDB
+          const clearNotesPromise = new Promise((resolve, reject) => {
+            const transaction = this.db.transaction('notes', 'readwrite');
+            const store = transaction.objectStore('notes');
+            const request = store.clear();
+            request.onsuccess = resolve;
+            request.onerror = reject;
+          });
+          
+          const clearSettingsPromise = new Promise((resolve, reject) => {
+            const transaction = this.db.transaction('settings', 'readwrite');
+            const store = transaction.objectStore('settings');
+            const request = store.clear();
+            request.onsuccess = resolve;
+            request.onerror = reject;
+          });
+          
+          await Promise.all([clearNotesPromise, clearSettingsPromise]);
+          
+          // Reset app state
+          this.notes = [];
+          this.pinboard.innerHTML = '';
+          document.body.style.backgroundImage = 'none';
+          document.getElementById('bgImageUrl').value = '';
+          
+          // Reset theme to default
+          document.body.classList.remove('material-theme', 'dark-theme');
+          
+          // Update theme selection UI
+          const themeOptions = document.querySelectorAll('.theme-option');
+          themeOptions.forEach(option => {
+            option.classList.remove('active');
+            if (option.dataset.theme === 'default') {
+              option.classList.add('active');
+            }
+          });
+          
+          // Create welcome note
+          this.createNote({
+            title: 'Welcome!', 
+            content: 'Your data has been reset. Drag notes to rearrange them.',
+            tags: ['welcome', 'reset']
+          });
+          
+          this.showToast('All data has been reset');
+          document.getElementById('settingsModal').classList.remove('active');
+        } catch (err) {
+          console.error('Error purging data:', err);
+          this.showToast('Error resetting app data');
+        }
+      }
+    
+      showConfirmModal(message, callback, content = null) {
+        const confirmModal = document.querySelector('.confirm-modal');
+        const messageEl = confirmModal.querySelector('.confirm-message');
+        const confirmBtn = confirmModal.querySelector('.confirm-btn.confirm');
+        const cancelBtn = confirmModal.querySelector('.confirm-btn.cancel');
+    
+        // Reset modal content
+        messageEl.textContent = message;
+        
+        // If custom content was provided, add it after the message
+        if (content) {
+          messageEl.appendChild(content);
+        }
+    
+        // Position modal in center of viewport
+        const updatePosition = () => {
+          const rect = confirmModal.getBoundingClientRect();
+          confirmModal.style.top = `${(window.innerHeight - rect.height) / 2}px`;
+          confirmModal.style.left = `${(window.innerWidth - rect.width) / 2}px`;
+        };
+    
+        confirmModal.classList.add('active');
+        updatePosition();
+    
+        // Update position if window is resized
+        window.addEventListener('resize', updatePosition);
+    
+        // Set up button handlers
+        const handleConfirm = () => {
+          confirmModal.classList.remove('active');
+          window.removeEventListener('resize', updatePosition);
+          callback(true);
+          cleanup();
+        };
+    
+        const handleCancel = () => {
+          confirmModal.classList.remove('active');
+          window.removeEventListener('resize', updatePosition);
+          callback(false);
+          cleanup();
+        };
+    
+        const cleanup = () => {
+          confirmBtn.removeEventListener('click', handleConfirm);
+          cancelBtn.removeEventListener('click', handleCancel);
+          // Remove any custom content
+          while (messageEl.childNodes.length > 1) {
+            messageEl.removeChild(messageEl.lastChild);
+          }
+        };
+    
+        confirmBtn.addEventListener('click', handleConfirm);
+        cancelBtn.addEventListener('click', handleCancel);
+      }
+    
+      showToast(message, duration = 3000) {
+        this.toast.textContent = message;
+        this.toast.classList.add('visible');
+        
+        setTimeout(() => {
+          this.toast.classList.remove('visible');
+        }, duration);
+      }
+    
+      getRandomColor() {
+        const colors = [
+          'var(--accent-orange)', 
+          'var(--accent-cyan)', 
+          'var(--accent-pink)',
+          'var(--note-red)',
+          'var(--note-purple)',
+          'var(--note-blue)',
+          'var(--note-green)',
+          'var(--note-yellow)',
+          'var(--note-brown)',
+          'var(--note-light-gray)',
+          'var(--note-magenta)',
+          'var(--note-lilac)',
+          'var(--note-fuchsia)',
+          'var(--note-hot-pink)',
+          'var(--note-mint-green)',
+          'var(--note-rose)',
+          'var(--note-burnt-orange)',
+          'var(--note-sky-blue)'
+        ];
+        
+        // Try to get default color from settings first
+        const defaultColor = localStorage.getItem('defaultNoteColor');
+        if (defaultColor) {
+          return defaultColor;
+        }
+        
+        // Otherwise return a random color
+        return colors[Math.floor(Math.random() * colors.length)];
+      }
+    
+      openTagEditor(note) {
+        const tagModal = document.getElementById('tagModal');
+        const tagList = tagModal.querySelector('.tag-list');
+        const suggestions = tagModal.querySelector('.tag-suggestions');
+        
+        // Clear existing tags
+        tagList.innerHTML = '';
+        
+        // Add current tags
+        note.tags.forEach(tag => {
+          const tagEl = document.createElement('span');
+          tagEl.className = 'tag';
+          tagEl.textContent = `#${tag}`;
+          tagEl.addEventListener('click', () => {
+            note.tags = note.tags.filter(t => t !== tag);
+            this.updateNoteElement(note);
+            this.openTagEditor(note); // Refresh tag editor
+            this.saveNotes();
+          });
+          tagList.appendChild(tagEl);
+        });
+        
+        // Get all tags from all notes for suggestions
+        const allTags = this.getAllTags();
+        
+        // Only show suggestions container if there are suggestions
+        if (allTags.length > 0) {
+          // Create header with suggestions toggle
+          suggestions.innerHTML = `
+            <div class="suggestions-header">
+              <h4>Suggestions</h4>
+              <button class="btn" id="toggleSuggestions">▼</button>
+            </div>
+            <div class="suggestions-content"></div>
+          `;
+          
+          const suggestionsContent = suggestions.querySelector('.suggestions-content');
+          const toggleBtn = suggestions.querySelector('#toggleSuggestions');
+          
+          // Add suggestions
+          allTags.forEach(tag => {
+            if (!note.tags.includes(tag.name)) {
+              const suggestionEl = document.createElement('span');
+              suggestionEl.className = 'suggestion-tag';
+              suggestionEl.innerHTML = `#${tag.name} <span class="tag-count">${tag.count}</span>`;
+              suggestionEl.addEventListener('click', () => {
+                note.tags.push(tag.name);
+                this.updateNoteElement(note);
+                this.openTagEditor(note); // Refresh tag editor
+                this.saveNotes();
+              });
+              suggestionsContent.appendChild(suggestionEl);
+            }
+          });
+          
+          // Toggle suggestions visibility
+          toggleBtn.addEventListener('click', () => {
+            suggestionsContent.classList.toggle('expanded');
+            toggleBtn.textContent = suggestionsContent.classList.contains('expanded') ? '▲' : '▼';
+          });
+        } else {
+          suggestions.innerHTML = '';
+        }
+        
+        // Store current note to use when adding tags
+        this.currentEditingNote = note;
+        
+        // Show modal
+        tagModal.classList.add('active');
+      }
+      
+      addTag(tag) {
+        if (this.currentEditingNote && !this.currentEditingNote.tags.includes(tag)) {
+          this.currentEditingNote.tags.push(tag);
+          this.updateNoteElement(this.currentEditingNote);
+          this.openTagEditor(this.currentEditingNote); // Refresh tag editor
+          this.saveNotes();
+        }
+      }
+      
+      updateNoteElement(note) {
+        const noteEl = document.querySelector(`.note[data-id="${note.id}"]`);
+        if (!noteEl) return;
+        
+        // Update title
+        noteEl.querySelector('.note-title').value = note.title;
+        noteEl.querySelector('.note-content-title').textContent = note.title;
+        
+        // Update content
+        noteEl.querySelector('.note-textarea').value = note.content;
+        
+        // Update tags
+        noteEl.querySelector('.note-tags').innerHTML = 
+          note.tags.map(tag => `<span class="tag">#${tag}</span>`).join('');
+        
+        // Update color
+        noteEl.querySelector('.note-header').style.background = note.color;
+      }
+      
+      getAllTags() {
+        const tagMap = new Map();
+        
+        this.notes.forEach(note => {
+          note.tags.forEach(tag => {
+            if (tagMap.has(tag)) {
+              tagMap.set(tag, tagMap.get(tag) + 1);
+            } else {
+              tagMap.set(tag, 1);
+            }
+          });
+        });
+        
+        // Convert map to array and sort by count (descending)
+        return Array.from(tagMap).map(([name, count]) => ({name, count}))
+          .sort((a, b) => b.count - a.count);
+      }
+    }
+    
+    const app = new NotePinboard();
+    </script>
+    </body></html>
